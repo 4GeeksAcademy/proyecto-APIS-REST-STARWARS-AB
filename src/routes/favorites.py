@@ -50,8 +50,8 @@ def delete_character_favorite(character_id):
 
     character = db.session.get(Favorite,character_id)
     if character is None:
-        return jsonify("Error al buscar el personaje"),404
+        return jsonify("Error al eliminar el personaje"),400
     db.session.delete(character)
     db.session.commit()
 
-    return jsonify("Personaje eliminado correctamente"),200
+    return jsonify("Personaje favorito eliminado correctamente"),200
