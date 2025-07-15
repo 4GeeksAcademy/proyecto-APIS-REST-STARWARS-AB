@@ -9,15 +9,16 @@ api = Blueprint("/api/character",__name__)
 
 
 @api.route("/")
-def get_characters():
+def get_all_characters():
    all_characters = Character.query.all()
    if all_characters is None:
       return jsonify("Error no se ha encontrado ningun personaje"),400
    all_characters = list(map(lambda x: x.serialize(),all_characters))
    return jsonify({"all_character" : all_characters}),200
 
-@api.route("/character_id>",methods = ["GET"])
+@api.route("<character_id>",methods = ["GET"])
 def get_character(character_id):
+
    
    character = db.session.get(Character,character_id)
    if character is None:
@@ -26,16 +27,16 @@ def get_character(character_id):
 
    return jsonify({"character":character.serialize()}),200
 
-@api.route("/", methods =["POST"])
+@api.route("/create", methods =["POST"])
 def create_planet():
     body = request.get_json()
     if body is None:
        return jsonify("Error, el cuerpo de la solicitud es null"),400
-    if  'name' is not body:
+    if  'name' not in body:
        return jsonify("Error, falta introducir el nombre del personaje"),400
-    if 'description' is not body:
+    if 'description' not in body:
        return jsonify("Error, falta por introducir una descripcion del personaje"),400
-    if 'planet_id' is not body:
+    if 'planet_id' not in body:
        return jsonify("Error, falta poner el planeta de origen del personaje"),400
     
     new_character = Character()
@@ -46,3 +47,13 @@ def create_planet():
     db.session.commit()
    
     return jsonify({"planeta": new_character.serialize()}),200
+
+@api.route("/<character_id>",methods = ["DELETE"])
+def delete_character_favorite(character_id):
+    character = db.session.get(Character,character_id)
+    if character is None:
+        return jsonify("Error, no se ha encontrado el planeta buscado"),400
+    db.session.delete(character)
+    db.session.commit()
+
+    return jsonify("Personaje  eliminado correctamente"),200

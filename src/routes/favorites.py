@@ -1,34 +1,38 @@
 from flask import Flask,jsonify,request,Blueprint
 from database.db import db
-from models.Favorites import Favorite
+from models.User import Favorite
 
 api = Blueprint("/api/favorites",__name__)
-
-
-
-@api.route("/planets/<int:planet_id>", methods =["POST"])
-def create_favorite_planet(id_planet):
+# NO FUNCIONA PREGUNTAR HORACIO
+@api.route("/planets/<int:planet_id>/<int:id>", methods=["POST"])
+def create_favorite_planet(planet_id, id):
     body = request.get_json()
-    new_favorite = Favorite
-    new_favorite.planet_id = body[id_planet]
-    db.session.add(new_favorite)
+    new_favorite_planet = Favorite
+    new_favorite_planet.planet_id = body[planet_id]
+    new_favorite_planet.user_id = id
+    db.session.add(new_favorite_planet)
+    db.session.commit()
+    return jsonify("Se ha añadido correctamente el planeta favorito"),200
 
-    return jsonify("Se ha añadido correctamente el personaje favorito")
 
 
 
-@api.route("/character/<int:character_id>", methods =["POST"])
-def create_favorite_character(id_character):
+# NO FUNCIONA PREGUNTAR HORACIO
+@api.route("/characters/<int:character_id>/<int:id>", methods =["POST"])
+def create_favorite_character(id_character,id):
     body = request.get_json()
     new_favorite_character = Favorite
     new_favorite_character.character_id = body[id_character]
+    new_favorite_character.user_id = id
     db.session.add(new_favorite_character)
-
-    return jsonify("planeta favorito creado correctamente")
-
+    db.session.commit()
 
 
-@api.route("/planet/<int:planet_id",methods = ["DELETE"])
+    return jsonify("planeta favorito creado correctamente"),200
+
+
+
+@api.route("/planets/<int:planet_id>",methods = ["DELETE"])
 def delete_planet_favorite(planet_id):
     planet = db.session.get(Favorite,planet_id)
     if planet is None:
@@ -41,13 +45,13 @@ def delete_planet_favorite(planet_id):
 
 
 
-@api.route("/character/<int:character_id>",methods = ["DELETE"])
+@api.route("/characters/<int:character_id>",methods = ["DELETE"])
 def delete_character_favorite(character_id):
 
     character = db.session.get(Favorite,character_id)
     if character is None:
-        return jsonify("Error al bbuscar el personaje"),404
+        return jsonify("Error al buscar el personaje"),404
     db.session.delete(character)
     db.session.commit()
 
-    return jsonify("Usuario eliminado correctamente"),200
+    return jsonify("Personaje eliminado correctamente"),200

@@ -1,14 +1,14 @@
 from flask import Flask, jsonify,request,Blueprint
-from models.Favorites import Favorite
+from models.User import Favorite
 from models.User import User
 from database.db import db
 
 api = Blueprint("/api/user",__name__)
 
-@api.route("/favorites/<int:user_id>",methods = ["GET"])
-def get_users_favorites(id_user):
+@api.route("/favorites/<int:id>",methods = ["GET"])
+def get_users_favorites(id):
    
-   user_favorite = Favorite.query.filter_by(id_user)
+   user_favorite = Favorite.query.filter_by(user_id = id)
 
    if user_favorite is None:
      return jsonify("Error, usuario no encontrado"),404
@@ -26,9 +26,9 @@ def get_users():
       return jsonify("Error usuarios no encontrados"),404
    
    all_users = list(map(lambda x: x.serialize(),all_users))
-   return jsonify({"all_user" : all_users}),200
+   return jsonify({"all_user": all_users}),200
 
-@api.route("/<user_id>",methods = ["GET"])
+@api.route("<user_id>",methods = ["GET"])
 def get_user(user_id):
    user = db.session.get(User,user_id)
    if user is None:

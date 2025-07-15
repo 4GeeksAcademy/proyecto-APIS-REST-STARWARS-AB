@@ -3,9 +3,7 @@ from database.db import db
 from models.Planets import Planet
 api = Blueprint("/api/planets",__name__)
 
-@api.route("/")
-def get_planets():
-    return jsonify("Todos los planetas")
+
 
 @api.route("/")
 def get_planets():
@@ -23,16 +21,16 @@ def get_planet(planet_id):
 
    return jsonify({"planet":planet.serialize()}),200
 
-@api.route("/", methods =["POST"])
+@api.route("/create", methods =["POST"])
 def create_planet():
     body = request.get_json()
     if body is None:
        return jsonify("Error, el cuerpo de la solicitud es null"),400
-    if  'name' is not body:
+    if  'name' not in body:
        return jsonify("Error, falta introducir el nombre del planeta"),400
-    if 'description' is not body:
+    if 'description' not in body:
        return jsonify("Error, falta por introducir una descripcion del planeta"),400
-    if 'rotation' is not body:
+    if 'rotation' not in body:
        return jsonify("Error, falta poner la rotacion del planeta"),400
     new_planet = Planet()
     new_planet.name = body["name"]
@@ -43,7 +41,7 @@ def create_planet():
    
     return jsonify({"planeta": new_planet.serialize()}),200
 
-@api.route("/<int:planet_id",methods = ["DELETE"])
+@api.route("/<int:planet_id>",methods = ["DELETE"])
 def delete_planet_favorite(planet_id):
     planet = db.session.get(Planet,planet_id)
     if planet is None:
@@ -51,4 +49,4 @@ def delete_planet_favorite(planet_id):
     db.session.delete(planet)
     db.session.commit()
 
-    return jsonify("Planeta favorito eliminado correctamente"),200
+    return jsonify("Planeta eliminado correctamente"),200
