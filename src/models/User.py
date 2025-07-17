@@ -22,7 +22,8 @@ class User(db.Model):
             "id": self.id,
             "email": self.email,
             "nickname": self.nickname,
-            "favorites": self.favorites
+            "favorites":[ fav.serialize() for fav in self.favorites ]
+            
             
         }
     
@@ -40,8 +41,9 @@ class Favorite(db.Model):
         return{
         "id": self.id,
         "user_id": self.user_id,
-        "planet_id":self.planet.id,
-        "character_id":self.character
+        "planet_id":self.planet_id,
+        "character_id":self.character_id
+       
 
         }
         

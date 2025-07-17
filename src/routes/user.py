@@ -22,10 +22,12 @@ def get_users_favorites(id):
 @api.route("/")
 def get_users():
    all_users = User.query.all()
+
    if all_users is None:
       return jsonify("Error usuarios no encontrados"),404
    
    all_users = list(map(lambda x: x.serialize(),all_users))
+   print(all_users)
    return jsonify({"all_user": all_users}),200
 
 @api.route("<user_id>",methods = ["GET"])

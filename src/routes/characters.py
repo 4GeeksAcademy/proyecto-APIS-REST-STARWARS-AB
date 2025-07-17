@@ -4,7 +4,7 @@ from models.Characters import Character
 
 
 
-api = Blueprint("/api/character",__name__)
+api = Blueprint("/api/characters",__name__)
 
 
 
@@ -28,7 +28,7 @@ def get_character(character_id):
    return jsonify({"character":character.serialize()}),200
 
 @api.route("/create", methods =["POST"])
-def create_planet():
+def create_charactert():
     body = request.get_json()
     if body is None:
        return jsonify("Error, el cuerpo de la solicitud es null"),400
